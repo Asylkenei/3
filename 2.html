@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Футбол — моё хобби</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;background:#0c0c0c;color:#f0f0f0;overflow-x:hidden;line-height:1.6}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ── TOKENS ── */
+:root{
+  --lime:#b8ff35;
+  --lime-dim:#8ec926;
+  --white:#f0f0f0;
+  --ink:#0c0c0c;
+  --gray:#1a1a1a;
+  --gray2:#262626;
+  --gray3:#3a3a3a;
+  --muted:#6b6b6b;
+  --display:'Unbounded',sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+/* ── UTILS ── */
+.container{max-width:1200px;margin:0 auto;padding:0 40px}
+.tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;transition:background .3s var(--ease),backdrop-filter .3s}
+nav.solid{background:rgba(12,12,12,.92);backdrop-filter:blur(16px)}
+.nav-logo{font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--lime)}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--muted);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white)}
+.burger{display:none;flex-direction:column;gap:5px;padding:4px}
+.burger span{width:22px;height:1.5px;background:var(--white);display:block;transition:transform .3s,opacity .3s}
+.burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ── HERO ── */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 40px 80px;position:relative;overflow:hidden;background:#0c0c0c}
+.hero-bg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);gap:1px;background:#111;opacity:.5}
+.hero-bg span{background:#0c0c0c}
+.hero-bg span.lit{background:#141414}
+.hero-pitch{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(70vw,700px);aspect-ratio:1.4;border:1px solid rgba(255,255,255,.04);border-radius:4px;pointer-events:none}
+.hero-pitch::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,.04)}
+.hero-pitch::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:26%;aspect-ratio:1;border:1px solid rgba(255,255,255,.04);border-radius:50%}
+.hero-number{position:absolute;top:48px;right:40px;font-family:var(--display);font-size:clamp(120px,20vw,200px);font-weight:900;line-height:1;color:rgba(255,255,255,.03);user-select:none;pointer-events:none}
+.hero-content{position:relative;z-index:2;max-width:900px}
+.hero-eyebrow{font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:28px;opacity:0;animation:fadeUp .6s .1s var(--ease) forwards}
+.hero-title{font-family:var(--display);font-size:clamp(52px,9vw,120px);font-weight:900;line-height:.92;letter-spacing:-.02em;margin-bottom:36px}
+.hero-title span{display:block;opacity:0;animation:fadeUp .7s var(--ease) forwards}
+.hero-title span:nth-child(1){animation-delay:.2s}
+.hero-title span:nth-child(2){animation-delay:.35s;color:var(--lime)}
+.hero-title span:nth-child(3){animation-delay:.5s}
+.hero-row{display:flex;align-items:flex-end;gap:40px;flex-wrap:wrap;opacity:0;animation:fadeUp .7s .65s var(--ease) forwards}
+.hero-desc{font-size:16px;color:var(--muted);max-width:380px;line-height:1.7}
+.hero-cta{flex-shrink:0;display:inline-flex;align-items:center;gap:10px;background:var(--lime);color:var(--ink);font-size:13px;font-weight:500;letter-spacing:.06em;padding:16px 28px;border-radius:40px;transition:transform .2s var(--ease),background .2s}
+.hero-cta:hover{background:#c8ff50;transform:translateY(-2px)}
+.hero-cta svg{transition:transform .2s}
+.hero-cta:hover svg{transform:translateX(3px)}
+.hero-scroll{position:absolute;bottom:32px;right:40px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);z-index:2}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--lime),transparent);animation:scrollPulse 1.8s ease infinite}
+@keyframes scrollPulse{0%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1}100%{opacity:0;transform:scaleY(1);transform-origin:top}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* ── SECTION BASE ── */
+section{padding:120px 0}
+.s-header{margin-bottom:72px}
+.s-title{font-family:var(--display);font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1;letter-spacing:-.02em;margin-bottom:0}
+.s-title em{font-style:normal;color:var(--lime)}
+
+/* ── ABOUT ── */
+.about{background:#0c0c0c}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.about-left .tag{margin-bottom:24px}
+.about-intro{font-size:clamp(18px,2.2vw,24px);font-weight:400;line-height:1.5;color:var(--white);margin-bottom:48px}
+.about-intro strong{color:var(--lime);font-weight:500}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray3);border:1px solid var(--gray3);border-radius:8px;overflow:hidden;margin-bottom:48px}
+.stat{background:var(--gray);padding:24px 20px;text-align:center}
+.stat-n{font-family:var(--display);font-size:36px;font-weight:900;color:var(--lime);line-height:1;display:block}
+.stat-l{font-size:12px;color:var(--muted);display:block;margin-top:6px;letter-spacing:.04em}
+.about-facts{display:flex;flex-direction:column;gap:16px}
+.fact{display:flex;gap:16px;padding:20px;background:var(--gray);border-radius:8px;border:1px solid var(--gray2);transition:border-color .2s}
+.fact:hover{border-color:var(--gray3)}
+.fact-ico{font-size:20px;flex-shrink:0;margin-top:1px}
+.fact h4{font-size:14px;font-weight:500;margin-bottom:4px;color:var(--white)}
+.fact p{font-size:13px;color:var(--muted);line-height:1.6}
+.about-right{position:sticky;top:120px}
+.pitch-visual{background:var(--gray);border:1px solid var(--gray2);border-radius:12px;aspect-ratio:.75;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pitch-grass{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 32px)}
+.pitch-lines{position:absolute;inset:16px;border:1px solid rgba(255,255,255,.06);border-radius:2px}
+.pitch-half{position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(255,255,255,.06);transform:translateX(-50%)}
+.pitch-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30%;aspect-ratio:1;border:1px solid rgba(255,255,255,.06);border-radius:50%}
+.pitch-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);top:50%;left:50%;transform:translate(-50%,-50%)}
+.pdot{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%)}
+.pdot-me{background:var(--lime);box-shadow:0 0 12px rgba(184,255,53,.5);width:14px;height:14px;top:50%;left:50%}
+.pdot-a1{background:rgba(255,255,255,.3);top:35%;left:30%}
+.pdot-a2{background:rgba(255,255,255,.3);top:35%;left:70%}
+.pdot-a3{background:rgba(255,255,255,.3);top:65%;left:30%}
+.pdot-a4{background:rgba(255,255,255,.3);top:65%;left:70%}
+.pdot-e1{background:#e74c3c;top:30%;left:50%}
+.pdot-e2{background:#e74c3c;top:50%;left:25%}
+.pdot-e3{background:#e74c3c;top:50%;left:75%}
+.pdot-ball{background:#fff;width:8px;height:8px;top:48%;left:55%}
+.pitch-pos-label{position:absolute;bottom:24px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ── BENEFITS ── */
+.benefits{background:#101010;border-top:1px solid var(--gray)}
+.benefits-intro{display:flex;gap:80px;align-items:flex-start;margin-bottom:64px}
+.benefits-intro .s-title{flex:1}
+.benefits-lead{flex:1;font-size:16px;color:var(--muted);line-height:1.8;align-self:flex-end;padding-bottom:6px}
+.benefits-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray3);border:1px solid var(--gray3);border-radius:12px;overflow:hidden}
+.bcard{background:var(--gray);padding:36px 28px;transition:background .2s}
+.bcard:hover{background:#1f1f1f}
+.bcard-num{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--lime);margin-bottom:24px}
+.bcard-ico{font-size:28px;margin-bottom:16px}
+.bcard h3{font-size:16px;font-weight:500;margin-bottom:10px;color:var(--white)}
+.bcard p{font-size:13px;color:var(--muted);line-height:1.7}
+.bcard-bar{margin-top:24px;height:2px;background:var(--gray2);border-radius:2px;overflow:hidden}
+.bcard-fill{height:100%;background:var(--lime);width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+
+/* ── PLAYERS ── */
+.players{background:#0c0c0c}
+.players-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:64px}
+.players-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.pcard{border:1px solid var(--gray2);border-radius:12px;overflow:hidden;transition:border-color .25s,transform .25s var(--ease)}
+.pcard:hover{border-color:var(--gray3);transform:translateY(-4px)}
+.pcard-top{padding:36px 24px 28px;position:relative}
+.pcard-num{position:absolute;top:20px;right:20px;font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.1em;background:rgba(184,255,53,.1);color:var(--lime);padding:4px 10px;border-radius:20px;border:1px solid rgba(184,255,53,.15)}
+.pcard-avatar{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:22px;font-weight:700;color:#fff;margin-bottom:20px}
+.pcard h3{font-family:var(--display);font-size:18px;font-weight:700;line-height:1.1;margin-bottom:4px}
+.pcard-club{font-size:12px;color:var(--lime);letter-spacing:.06em;margin-bottom:0}
+.pcard-body{padding:0 24px 28px;border-top:1px solid var(--gray2)}
+.pcard-achiev{padding-top:20px;display:flex;flex-direction:column;gap:8px}
+.pcard-achiev li{font-size:12px;color:var(--muted);padding-left:14px;position:relative;line-height:1.5}
+.pcard-achiev li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:1px;background:var(--lime)}
+.pcard-quote{font-size:12px;color:#555;font-style:italic;margin-top:16px;padding-top:16px;border-top:1px solid var(--gray2);line-height:1.6}
+.club-block{background:var(--gray);border:1px solid var(--gray2);border-radius:12px;padding:36px;display:flex;align-items:center;gap:32px}
+.club-badge{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:18px;font-weight:900;flex-shrink:0;background:linear-gradient(135deg,#C0272D,#0062B2);color:#fff}
+.club-info h4{font-family:var(--display);font-size:22px;font-weight:700;margin-bottom:8px}
+.club-info p{font-size:13px;color:var(--muted);max-width:500px;line-height:1.7;margin-bottom:16px}
+.club-tags{display:flex;flex-wrap:wrap;gap:8px}
+.club-tag{font-size:11px;font-weight:500;padding:5px 12px;border-radius:20px;background:var(--gray2);color:var(--muted);border:1px solid var(--gray3)}
+
+/* ── GALLERY ── */
+.gallery{background:#101010;border-top:1px solid var(--gray)}
+.gallery-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px}
+.gallery-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:240px;gap:8px}
+.gitem{border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
+.gitem:nth-child(1){grid-column:span 5;grid-row:span 2}
+.gitem:nth-child(2){grid-column:span 4}
+.gitem:nth-child(3){grid-column:span 3}
+.gitem:nth-child(4){grid-column:span 3}
+.gitem:nth-child(5){grid-column:span 4}
+.gitem:nth-child(6){grid-column:span 5}
+.gitem-bg{position:absolute;inset:0;transition:transform .5s var(--ease)}
+.gitem:hover .gitem-bg{transform:scale(1.06)}
+.gitem-caption{position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 100%);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);transform:translateY(4px);opacity:0;transition:opacity .3s,transform .3s}
+.gitem:hover .gitem-caption{opacity:1;transform:none}
+
+/* Gallery scene fills */
+.g-stadium{background:radial-gradient(ellipse at 50% 80%,#1a3d28 0%,#0a1f12 60%,#060e09 100%);display:flex;align-items:center;justify-content:center;font-size:80px;filter:saturate(1.2)}
+.g-ball{background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-size:64px}
+.g-goal{background:linear-gradient(160deg,#0a1a10,#163124);display:flex;align-items:center;justify-content:center;font-size:56px}
+.g-team{background:linear-gradient(135deg,#111,#1c1c1c);display:flex;align-items:center;justify-content:center;font-size:48px;letter-spacing:.1em}
+.g-field{background:linear-gradient(180deg,#0a1f10,#1a4022,#236b30);position:relative;overflow:hidden}
+.g-field::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 48px)}
+.g-field::after{content:'⚽';position:absolute;bottom:20px;right:24px;font-size:32px;opacity:.6}
+.g-trophy{background:linear-gradient(135deg,#1a1200,#2d2000);display:flex;align-items:center;justify-content:center;font-size:64px}
+
+/* ── CONTACT ── */
+.contact{background:#0c0c0c}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-left .tag{display:block;margin-bottom:24px}
+.contact-left .s-title{margin-bottom:24px}
+.contact-left p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:48px}
+.c-links{display:flex;flex-direction:column;gap:2px}
+.c-link{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:8px;border:1px solid transparent;transition:background .2s,border-color .2s,transform .2s}
+.c-link:hover{background:var(--gray);border-color:var(--gray2);transform:translateX(4px)}
+.c-link-ico{width:40px;height:40px;border-radius:8px;background:var(--gray);border:1px solid var(--gray2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.c-link-text strong{display:block;font-size:14px;font-weight:500;margin-bottom:2px}
+.c-link-text span{font-size:12px;color:var(--muted)}
+.contact-form{background:var(--gray);border:1px solid var(--gray2);border-radius:12px;padding:40px}
+.form-row{margin-bottom:20px}
+.form-row label{display:block;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.form-row input,.form-row textarea{width:100%;background:#111;border:1px solid var(--gray2);border-radius:8px;padding:14px 16px;color:var(--white);font-family:'Inter',sans-serif;font-size:14px;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s}
+.form-row input::placeholder,.form-row textarea::placeholder{color:var(--gray3)}
+.form-row input:focus,.form-row textarea:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(184,255,53,.08)}
+.form-row textarea{min-height:120px}
+.form-submit{width:100%;padding:16px;background:var(--lime);color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:.06em;border-radius:8px;transition:background .2s,transform .2s}
+.form-submit:hover{background:#c8ff50;transform:translateY(-1px)}
+.form-ok{display:none;text-align:center;color:var(--lime);font-size:13px;margin-top:16px}
+.form-ok.show{display:block}
+
+/* ── FOOTER ── */
+footer{background:#0c0c0c;border-top:1px solid var(--gray);padding:40px 0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-logo{font-family:var(--display);font-size:14px;font-weight:700;letter-spacing:.1em;color:var(--lime)}
+.footer-copy{font-size:12px;color:var(--muted)}
+.footer-nav{display:flex;gap:24px}
+.footer-nav a{font-size:12px;color:var(--muted);transition:color .2s}
+.footer-nav a:hover{color:var(--white)}
+
+/* ── BACK TO TOP ── */
+.btt{position:fixed;bottom:28px;right:28px;z-index:99;width:44px;height:44px;background:var(--lime);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0;pointer-events:none;transition:opacity .3s,transform .2s}
+.btt.show{opacity:1;pointer-events:auto}
+.btt:hover{transform:translateY(-2px)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.on{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .about-grid{grid-template-columns:1fr;gap:48px}
+  .about-right{position:static}
+  .pitch-visual{max-width:320px}
+  .benefits-intro{flex-direction:column;gap:24px}
+  .players-grid{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr;gap:48px}
+  .gallery-grid{grid-template-columns:repeat(6,1fr);grid-auto-rows:180px}
+  .gitem:nth-child(1){grid-column:span 6;grid-row:span 1}
+  .gitem:nth-child(2){grid-column:span 3}
+  .gitem:nth-child(3){grid-column:span 3}
+  .gitem:nth-child(4){grid-column:span 2}
+  .gitem:nth-child(5){grid-column:span 2}
+  .gitem:nth-child(6){grid-column:span 2}
+}
+@media(max-width:768px){
+  .container{padding:0 20px}
+  nav{padding:20px}
+  .nav-links{position:fixed;top:0;right:0;bottom:0;width:min(75vw,280px);background:rgba(12,12,12,.97);backdrop-filter:blur(20px);flex-direction:column;justify-content:center;align-items:center;gap:32px;transform:translateX(100%);transition:transform .3s var(--ease);border-left:1px solid var(--gray)}
+  .nav-links.open{transform:none}
+  .nav-links a{font-size:18px}
+  .burger{display:flex}
+  .hero{padding:0 20px 72px}
+  .hero-number{display:none}
+  .hero-scroll{display:none}
+  .benefits-grid{grid-template-columns:1fr 1fr}
+  .players-grid{grid-template-columns:1fr}
+  .players-header{flex-direction:column;align-items:flex-start;gap:24px}
+  .gallery-grid{grid-auto-rows:150px}
+  .club-block{flex-direction:column;text-align:center}
+  .club-tags{justify-content:center}
+  section{padding:80px 0}
+  .footer-inner{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+  .benefits-grid{grid-template-columns:1fr}
+  .about-stats{grid-template-columns:repeat(3,1fr)}
+  .gallery-grid{grid-auto-rows:120px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">⚽ FOOTBALL</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" class="nav-link">Обо мне</a></li>
+    <li><a href="#benefits" class="nav-link">Польза</a></li>
+    <li><a href="#players" class="nav-link">Игроки</a></li>
+    <li><a href="#gallery" class="nav-link">Галерея</a></li>
+    <li><a href="#contact" class="nav-link">Контакты</a></li>
+  </ul>
+  <button class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-pitch" aria-hidden="true"></div>
+  <div class="hero-number" aria-hidden="true">10</div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Моё хобби — 8 лет на поле</p>
+    <h1 class="hero-title">
+      <span>ФУТБОЛ —</span>
+      <span>МОЁ</span>
+      <span>ХОББИ</span>
+    </h1>
+    <div class="hero-row">
+      <p class="hero-desc">Страсть, скорость, команда. Каждый матч — это маленькая жизнь с падениями, подъёмами и победными голами.</p>
+      <a href="#about" class="hero-cta">
+        Узнать больше
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Скролл</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-left">
+        <span class="tag">/ О себе</span>
+        <h2 class="s-title" style="margin-bottom:32px">Как всё<br><em>началось</em></h2>
+        <p class="about-intro">
+          В <strong>8 лет</strong> папа впервые привёл меня на дворовой матч. Правил я не знал, но уже чувствовал — бегать за мячом это <strong>моё</strong>. С тех пор прошло больше <strong>8 лет</strong>.
+        </p>
+        <div class="about-stats reveal">
+          <div class="stat"><span class="stat-n">8+</span><span class="stat-l">Лет в футболе</span></div>
+          <div class="stat"><span class="stat-n">200+</span><span class="stat-l">Сыгранных матчей</span></div>
+          <div class="stat"><span class="stat-n">ЦП</span><span class="stat-l">Позиция на поле</span></div>
+        </div>
+        <div class="about-facts">
+          <div class="fact reveal">
+            <span class="fact-ico">🎯</span>
+            <div>
+              <h4>Моя позиция</h4>
+              <p>Центральный полузащитник — сердце команды. Читаю игру, распределяю мяч, не боюсь единоборств.</p>
+            </div>
+          </div>
+          <div class="fact reveal">
+            <span class="fact-ico">❤️</span>
+            <div>
+              <h4>Почему футбол?</h4>
+              <p>Ни один другой спорт не даёт такого выброса адреналина. Каждый матч — это маленькая жизнь.</p>
+            </div>
+          </div>
+          <div class="fact reveal">
+            <span class="fact-ico">🏆</span>
+            <div>
+              <h4>Главное достижение</h4>
+              <p>Победа в городском турнире среди школьников — момент, который я помню до мельчайших деталей.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-right reveal">
+        <div class="pitch-visual">
+          <div class="pitch-grass"></div>
+          <div class="pitch-lines"></div>
+          <div class="pitch-half"></div>
+          <div class="pitch-circle"></div>
+          <div class="pitch-dot"></div>
+          <div class="pdot pdot-me" title="Я"></div>
+          <div class="pdot pdot-a1"></div>
+          <div class="pdot pdot-a2"></div>
+          <div class="pdot pdot-a3"></div>
+          <div class="pdot pdot-a4"></div>
+          <div class="pdot pdot-e1"></div>
+          <div class="pdot pdot-e2"></div>
+          <div class="pdot pdot-e3"></div>
+          <div class="pdot pdot-ball"></div>
+          <p class="pitch-pos-label">Центральный полузащитник ●</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div class="benefits-intro">
+      <h2 class="s-title"><em>Польза</em><br>футбола</h2>
+      <p class="benefits-lead">Футбол развивает тебя не только физически. Он меняет тебя изнутри — учит дисциплине, доверию к команде и умению принимать решения за доли секунды.</p>
+    </div>
+    <div class="benefits-grid">
+      <div class="bcard reveal">
+        <div class="bcard-num">01</div>
+        <div class="bcard-ico">💪</div>
+        <h3>Физическая форма</h3>
+        <p>90 минут на поле — это полноценная кардио-тренировка. Укрепляет ноги, корпус и сердечно-сосудистую систему.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:92%"></div></div>
+      </div>
+      <div class="bcard reveal">
+        <div class="bcard-num">02</div>
+        <div class="bcard-ico">🫁</div>
+        <h3>Выносливость</h3>
+        <p>Постоянные рывки тренируют дыхательную систему. После сезона ты перестаёшь уставать там, где раньше задыхался.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:88%"></div></div>
+      </div>
+      <div class="bcard reveal">
+        <div class="bcard-num">03</div>
+        <div class="bcard-ico">🤝</div>
+        <h3>Командная работа</h3>
+        <p>Один в поле — не воин. Футбол учит слушать других и жертвовать личными амбициями ради общей цели.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:95%"></div></div>
+      </div>
+      <div class="bcard reveal">
+        <div class="bcard-num">04</div>
+        <div class="bcard-ico">🧠</div>
+        <h3>Дисциплина</h3>
+        <p>Режим тренировок, диета, сон — футбол структурирует жизнь. Эта дисциплина переносится в учёбу и работу.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:85%"></div></div>
+      </div>
+      <div class="bcard reveal">
+        <div class="bcard-num">05</div>
+        <div class="bcard-ico">⭐</div>
+        <h3>Лидерство</h3>
+        <p>Принимать решения за доли секунды, вести за собой — на поле рождаются настоящие лидеры.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:80%"></div></div>
+      </div>
+      <div class="bcard reveal">
+        <div class="bcard-num">06</div>
+        <div class="bcard-ico">😊</div>
+        <h3>Психическое здоровье</h3>
+        <p>Выброс эндорфинов, общение с командой и победа над собой — лучший антидепрессант без побочных эффектов.</p>
+        <div class="bcard-bar"><div class="bcard-fill" style="--w:90%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section class="players" id="players">
+  <div class="container">
+    <div class="players-header">
+      <div>
+        <span class="tag">/ Кумиры</span>
+        <h2 class="s-title">Любимые<br><em>игроки</em></h2>
+      </div>
+      <p style="font-size:14px;color:var(--muted);max-width:280px;text-align:right;line-height:1.7">Они вдохновляют меня каждый раз, когда я выхожу на поле</p>
+    </div>
+
+    <div class="players-grid">
+      <div class="pcard reveal">
+        <div class="pcard-top" style="background:#111">
+          <div class="pcard-num">#10</div>
+          <div class="pcard-avatar" style="background:linear-gradient(135deg,#0033A0,#C8102E)">LM</div>
+          <h3>Лионель Месси</h3>
+          <p class="pcard-club">Аргентина / Интер Майами</p>
+        </div>
+        <div class="pcard-body">
+          <ul class="pcard-achiev">
+            <li>8× «Золотой мяч» — абсолютный рекорд</li>
+            <li>Чемпион мира 2022 года</li>
+            <li>4× победитель Лиги чемпионов</li>
+            <li>Лучший бомбардир Ла Лиги в истории</li>
+          </ul>
+          <p class="pcard-quote">«Месси доказал: размер не определяет величие. Его дриблинг — это танец с мячом.»</p>
+        </div>
+      </div>
+
+      <div class="pcard reveal">
+        <div class="pcard-top" style="background:#111">
+          <div class="pcard-num">#7</div>
+          <div class="pcard-avatar" style="background:linear-gradient(135deg,#EF0107,#FFD700)">CR</div>
+          <h3>Криштиану Роналду</h3>
+          <p class="pcard-club">Португалия / Аль-Наср</p>
+        </div>
+        <div class="pcard-body">
+          <ul class="pcard-achiev">
+            <li>5× «Золотой мяч»</li>
+            <li>5× победитель Лиги чемпионов</li>
+            <li>900+ голов в профессиональной карьере</li>
+            <li>Лучший бомбардир ЛЧ в истории</li>
+          </ul>
+          <p class="pcard-quote">«CR7 показал мне, что работа и воля важнее природного таланта.»</p>
+        </div>
+      </div>
+
+      <div class="pcard reveal">
+        <div class="pcard-top" style="background:#111">
+          <div class="pcard-num">#9</div>
+          <div class="pcard-avatar" style="background:linear-gradient(135deg,#005CA9,#FCC200)">EH</div>
+          <h3>Эрлинг Холанд</h3>
+          <p class="pcard-club">Норвегия / Манчестер Сити</p>
+        </div>
+        <div class="pcard-body">
+          <ul class="pcard-achiev">
+            <li>Требл АПЛ / КУ / ЛЧ — 2023</li>
+            <li>52 гола за один сезон АПЛ</li>
+            <li>Лучший бомбардир Лиги чемпионов</li>
+            <li>Лауреат премии FWA</li>
+          </ul>
+          <p class="pcard-quote">«Холанд — машина нового поколения. Скорость, удар, инстинкт — всё идеально.»</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="club-block reveal">
+      <div class="club-badge">FCB</div>
+      <div class="club-info">
+        <h4>Барселона — мой любимый клуб</h4>
+        <p>испанский профессиональный футбольный клуб из одноимённого города. Основан в 1899 году группой швейцарских, британских, испанских и каталонских футболистов во главе с Жоаном Гампером</p>
+        <div class="club-tags">
+          <span class="club-tag">🏆 5× Лига чемпионов</span>
+          <span class="club-tag">🥇 29× Ла Лига</span>
+          <span class="club-tag">🌍 Лучший клуб XX века</span>
+          <span class="club-tag">📍 Барселона, Испания</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="gallery-header">
+      <div>
+        <span class="tag">/ Галерея</span>
+        <h2 class="s-title">Красота<br><em>игры</em></h2>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Футбол — это не только результат.<br>Это атмосфера, эмоции и момент.</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="gallery-grid">
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-stadium">🏟️</div>
+        <figcaption class="gitem-caption">Ночной стадион</figcaption>
+      </figure>
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-ball">⚽</div>
+        <figcaption class="gitem-caption">Классический мяч</figcaption>
+      </figure>
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-goal">🥅</div>
+        <figcaption class="gitem-caption">Момент гола</figcaption>
+      </figure>
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-team">👥⚽</div>
+        <figcaption class="gitem-caption">Командный дух</figcaption>
+      </figure>
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-field"></div>
+        <figcaption class="gitem-caption">Поле на рассвете</figcaption>
+      </figure>
+      <figure class="gitem reveal">
+        <div class="gitem-bg g-trophy">🏆</div>
+        <figcaption class="gitem-caption">Кубок победителя</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-left">
+        <span class="tag">/ Контакты</span>
+        <h2 class="s-title">Напиши<br><em>мне</em></h2>
+        <p>Любишь футбол? Есть вопросы или предложения? Пиши — отвечу быстро.</p>
+        <div class="c-links">
+          <a href="mailto:asylkenejmakazan@gmail.com" class="c-link">
+            <div class="c-link-ico">✉️</div>
+            <div class="c-link-text">
+              <strong>asylkenejmakazan@gmail.com</strong>
+              <span>asylkenejmakazan@gmail.com</span>
+            </div>
+          </a>
+          <a href="https://t.me/assy1k6nei" class="c-link" target="_blank" rel="noopener">
+            <div class="c-link-ico">💬</div>
+            <div class="c-link-text">
+              <strong>Telegram</strong>
+              <span>@assy1k6nei</span>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <form class="contact-form" id="cForm" novalidate>
+          <div class="form-row">
+            <label for="f-name">name</label>
+            <input type="text" id="f-name" placeholder="Как тебя зовут?" required autocomplete="name">
+          </div>
+          <div class="form-row">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" placeholder="твой@email.com" required autocomplete="email">
+          </div>
+          <div class="form-row">
+            <label for="f-msg">Сообщение</label>
+            <textarea id="f-msg" placeholder="Пиши о футболе, предложениях или просто привет 👋" required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Отправить →</button>
+          <p class="form-ok" id="fOk">⚽ Готово! Отвечу как можно скорее.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-logo">⚽ FOOTBALL</span>
+      <span class="footer-copy">© 2026 · Сделано с любовью к футболу</span>
+      <nav class="footer-nav" aria-label="Быстрые ссылки">
+        <a href="#about">Обо мне</a>
+        <a href="#benefits">Польза</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<button class="btt" id="btt" aria-label="Наверх">↑</button>
+
+<script>
+/* ── HERO GRID ── */
+(function(){
+  const bg = document.getElementById('heroBg');
+  for(let i=0;i<64;i++){
+    const s=document.createElement('span');
+    if(Math.random()>.7) s.classList.add('lit');
+    bg.appendChild(s);
+  }
+})();
+
+/* ── NAV ── */
+const nav=document.getElementById('nav');
+const burger=document.getElementById('burger');
+const navLinks=document.getElementById('navLinks');
+const allLinks=document.querySelectorAll('.nav-link');
+const sections=document.querySelectorAll('section[id]');
+
+function onScroll(){
+  const y=window.scrollY;
+  nav.classList.toggle('solid',y>60);
+  document.getElementById('btt').classList.toggle('show',y>400);
+
+  // Active link
+  let cur='';
+  sections.forEach(s=>{if(y>=s.offsetTop-120)cur=s.id});
+  allLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+
+  // Reveal
+  document.querySelectorAll('.reveal:not(.on)').forEach(el=>{
+    if(el.getBoundingClientRect().top<window.innerHeight-60) el.classList.add('on');
+  });
+
+  // Progress bars
+  document.querySelectorAll('.bcard-fill:not(.done)').forEach(el=>{
+    if(el.getBoundingClientRect().top<window.innerHeight-40){
+      el.style.width=getComputedStyle(el).getPropertyValue('--w');
+      el.classList.add('done');
+    }
+  });
+}
+
+window.addEventListener('scroll',onScroll,{passive:true});
+requestAnimationFrame(onScroll);
+
+/* ── BURGER ── */
+burger.addEventListener('click',()=>{
+  const open=navLinks.classList.toggle('open');
+  burger.classList.toggle('open',open);
+  burger.setAttribute('aria-expanded',String(open));
+  document.body.style.overflow=open?'hidden':'';
+});
+document.addEventListener('click',e=>{
+  if(navLinks.classList.contains('open')&&!navLinks.contains(e.target)&&!burger.contains(e.target)){
+    navLinks.classList.remove('open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded','false');
+    document.body.style.overflow='';
+  }
+});
+allLinks.forEach(a=>a.addEventListener('click',()=>{
+  navLinks.classList.remove('open');
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+}));
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(!t)return;
+    e.preventDefault();
+    window.scrollTo({top:t.offsetTop-72,behavior:'smooth'});
+  });
+});
+
+/* ── BACK TO TOP ── */
+document.getElementById('btt').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* ── FORM ── */
+document.getElementById('cForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const btn=e.target.querySelector('.form-submit');
+  btn.textContent='Отправляем…';
+  btn.disabled=true;
+  setTimeout(()=>{
+    e.target.reset();
+    btn.textContent='Отправить →';
+    btn.disabled=false;
+    document.getElementById('fOk').classList.add('show');
+    setTimeout(()=>document.getElementById('fOk').classList.remove('show'),4000);
+  },900);
+});
+
+/* ── PLAYER CARDS TILT ── */
+document.querySelectorAll('.pcard').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)/(r.width/2);
+    const dy=(e.clientY-r.top-r.height/2)/(r.height/2);
+    c.style.transform=`perspective(900px) rotateX(${-dy*4}deg) rotateY(${dx*4}deg) translateY(-4px)`;
+  });
+  c.addEventListener('mouseleave',()=>c.style.transform='');
+});
+</script>
+</body>
+</html>
